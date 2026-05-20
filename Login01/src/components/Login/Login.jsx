@@ -24,6 +24,15 @@ export default function Login({setToken}) {
             password
             });
         setToken(token);
+        //test for page refresh 
+        // const data = await loginUser({
+        //     username,
+        //     password
+        //     });
+        // setToken(data.token);
+        // navigate(from, { replace: true });
+        //end test
+
         }
 
   return(
