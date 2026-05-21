@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import './Login.css';
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 async function loginUser(credentials) {
  return fetch('http://localhost:8080/login', {
@@ -14,6 +16,12 @@ async function loginUser(credentials) {
 }
 
 export default function Login({setToken}) {
+
+   const navigate = useNavigate(); 
+   const location = useLocation();
+
+   const from = location.state?.from?.pathname || "/dashboard";
+
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
@@ -23,16 +31,10 @@ export default function Login({setToken}) {
             username,
             password
             });
-        setToken(token);
-        //test for page refresh 
-        // const data = await loginUser({
-        //     username,
-        //     password
-        //     });
-        // setToken(data.token);
-        // navigate(from, { replace: true });
-        //end test
 
+        setToken(token);
+
+        navigate(from, { replace: true });
         }
 
   return(
