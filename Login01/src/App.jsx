@@ -11,7 +11,7 @@ import useToken from './useToken';
 
 function App() {
 
-    const { token, setToken } = useToken();
+    const { token, setToken, removeToken } = useToken();
 
   return (
     <div className="wrapper">
@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/dashboard" element={              
             <ProtectedRoute token={token}>
-                <Dashboard />
+                <Dashboard removeToken={removeToken} />
               </ProtectedRoute>
               } 
               />
