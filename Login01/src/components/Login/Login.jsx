@@ -1,16 +1,15 @@
-import React, {useState} from 'react';
-import PropTypes from 'prop-types';
-import './Login.css';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import "./Login.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
 async function loginUser(credentials) {
-  const response = await fetch('http://localhost:8080/login', {
-    method: 'POST',
+  const response = await fetch("http://localhost:8080/login", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(credentials)
+    body: JSON.stringify(credentials),
   });
 
   if (!response.ok) {
@@ -21,75 +20,70 @@ async function loginUser(credentials) {
   return data;
 }
 
-export default function Login({setToken}) {
+export default function Login({ setToken }) {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-   const navigate = useNavigate(); 
-   const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
 
-   const from = location.state?.from?.pathname || "/dashboard";
+  const [username, setUserName] = useState();
+  const [password, setPassword] = useState();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-
-    const [username, setUserName] = useState();
-    const [password, setPassword] = useState();
-    const [error, setError] = useState(null);  
-     const [loading, setLoading] = useState(false);
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-        setError(null);
-        setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
     try {
       const token = await loginUser({
         username,
-        password
+        password,
       });
 
-        setToken(token);
-        navigate(from, { replace: true });
-
+      setToken(token);
+      navigate(from, { replace: true });
     } catch (err) {
-      setError(err.message || 'An error occurred during login');
+      setError(err.message || "An error occurred during login");
     } finally {
       setLoading(false);
     }
   };
 
-  return(
+  return (
     <div className="login-wrapper">
       <h1>Please Log In</h1>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <label>
           <p>Username</p>
-          <input 
+          <input
             type="text"
-            autoComplete="username" 
-            onChange={e => setUserName(e.target.value)} 
+            autoComplete="username"
+            onChange={(e) => setUserName(e.target.value)}
             disabled={loading}
-            />
+          />
         </label>
         <label>
           <p>Password</p>
-          <input 
-            type="password" 
-            autoComplete="current-password" 
-            onChange={e => setPassword(e.target.value)}
+          <input
+            type="password"
+            autoComplete="current-password"
+            onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
-            />
+          />
         </label>
         <div>
-          <button 
-            type="submit" 
-            disabled={loading}>
-            {loading ? 'Logging in...' : 'Submit'}
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Submit"}
           </button>
         </div>
       </form>
     </div>
-  )
+  );
 }
 
 Login.propTypes = {
-  setToken: PropTypes.func.isRequired
-  }
+  setToken: PropTypes.func.isRequired,
+};

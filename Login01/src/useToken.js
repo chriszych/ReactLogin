@@ -1,56 +1,55 @@
-import { useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export default function useToken() {
+
   const getToken = () => {
-    //const tokenString = sessionStorage.getItem('token');
-      const tokenString = localStorage.getItem('token');
+
+    const tokenString = localStorage.getItem("token");
     if (!tokenString) {
       return null;
     }
     const userToken = JSON.parse(tokenString);
     return userToken?.token;
 
-     if (!token) {
-      return null;
-    }
+    return checkToken();
+  };
 
-     // Decode the token to check expiration
+  const checkToken = () => {
+    // Decode the token to check expiration
     try {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000; // Convert to seconds
 
-     // If token is expired, remove it and return null
-     if (decoded.exp < currentTime) {
-       localStorage.removeItem('token');
-       return null;
-     }
+      // If token is expired, remove it and return null
+      if (decoded.exp < currentTime) {
+        localStorage.removeItem("token");
+        return null;
+      }
       return token;
     } catch (error) {
       // If decoding fails, token is invalid
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       return null;
     }
-
   };
+
   const [token, setToken] = useState(getToken());
 
-   const saveToken = userToken => {
-    //sessionStorage.setItem('token', JSON.stringify(userToken));
-     localStorage.setItem('token', JSON.stringify(userToken));
+  const saveToken = (userToken) => {
+    localStorage.setItem("token", JSON.stringify(userToken));
     setToken(userToken.token);
   };
 
   const removeToken = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setToken(null);
   };
 
   return {
     setToken: saveToken,
     token,
-    removeToken
+    removeToken,
+    checkToken,
   };
-
-
 }
