@@ -1,55 +1,61 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 import "./Login.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from '../../contexts/AuthContext';
 
-async function loginUser(credentials) {
-  const response = await fetch("http://localhost:8080/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
 
-  if (!response.ok) {
-    throw new Error(`Login failed: ${response.statusText}`);
-  }
 
-  const data = await response.json();
-  return data;
-}
+// async function loginUser(credentials) {
+//   const response = await fetch("http://localhost:8080/login", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(credentials),
+//   });
 
-export default function Login({ setToken }) {
-  const navigate = useNavigate();
-  const location = useLocation();
+//   if (!response.ok) {
+//     throw new Error(`Login failed: ${response.statusText}`);
+//   }
 
-  const from = location.state?.from?.pathname || "/dashboard";
+//   const data = await response.json();
+//   return data;
+// }
+  export default function Login() {
 
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+    const { login } = useAuth();
+// export default function Login({ setToken }) {
+   const navigate = useNavigate();
+   const location = useLocation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+   const from = location.state?.from?.pathname || "/dashboard";
 
-    try {
-      const token = await loginUser({
-        username,
-        password,
-      });
+   const [username, setUserName] = useState();
+   const [password, setPassword] = useState();
+   const [error, setError] = useState(null);
+   const [loading, setLoading] = useState(false);
 
-      setToken(token);
-      navigate(from, { replace: true });
-    } catch (err) {
-      setError(err.message || "An error occurred during login");
-    } finally {
-      setLoading(false);
-    }
-  };
+   const handleSubmit = async (e) => {
+     e.preventDefault();
+     setError(null);
+     setLoading(true);
+
+     try {
+        await login({username, password})
+//       const token = await loginUser({
+//         username,
+//         password,
+//       });
+
+//       setToken(token);
+       navigate(from, { replace: true });
+     } catch (err) {
+       setError(err.message || "An error occurred during login");
+     } finally {
+       setLoading(false);
+     }
+   };
 
   return (
     <div className="login-wrapper">
@@ -84,6 +90,6 @@ export default function Login({ setToken }) {
   );
 }
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
-};
+// Login.propTypes = {
+//   setToken: PropTypes.func.isRequired,
+// };

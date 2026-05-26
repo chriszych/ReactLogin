@@ -3,19 +3,7 @@ import { jwtDecode } from "jwt-decode";
 
 export default function useToken() {
 
-  const getToken = () => {
-
-    const tokenString = localStorage.getItem("token");
-    if (!tokenString) {
-      return null;
-    }
-    const userToken = JSON.parse(tokenString);
-    return userToken?.token;
-
-    return checkToken();
-  };
-
-  const checkToken = () => {
+ const checkToken = (token) => {
     // Decode the token to check expiration
     try {
       const decoded = jwtDecode(token);
@@ -33,6 +21,26 @@ export default function useToken() {
       return null;
     }
   };
+
+  const getToken = () => {
+
+    const tokenString = localStorage.getItem("token");
+    if (!tokenString) {
+      return null;
+    }
+
+    try {
+    const userToken = JSON.parse(tokenString);
+     return checkToken(userToken?.token);
+
+    } catch (error) {
+      localStorage.removeItem("token");
+      return null;
+    }
+
+  };
+
+ 
 
   const [token, setToken] = useState(getToken());
 

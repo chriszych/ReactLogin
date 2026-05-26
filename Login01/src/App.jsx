@@ -1,16 +1,18 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { useAuth } from './contexts/AuthContext';
 import Dashboard from "./components/Dashboard/Dashboard";
 import Preferences from "./components/Preferences/Preferences";
 import Login from "./components/Login/Login";
 import NotFoundPage from "./components/NotFoundPage/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import useToken from "./useToken";
+
 
 function App() {
-  const { token, setToken, removeToken, checkToken } = useToken();
 
+   const { token } = useAuth();
+   
   return (
     <div className="wrapper">
       <h1>Application</h1>
@@ -19,20 +21,20 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute checkToken={checkToken}>
-                <Dashboard removeToken={removeToken} />
+              <ProtectedRoute>
+                <Dashboard/>
               </ProtectedRoute>
             }
           />
           <Route
             path="/preferences"
             element={
-              <ProtectedRoute checkToken={checkToken}>
+              <ProtectedRoute>
                 <Preferences />
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="*"
             element={
