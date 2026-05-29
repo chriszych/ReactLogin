@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import { useState, useEffect } from 'react';
 import useToken from './../useToken';
 import { loginUser } from './../utils/api';
+import { AuthContext } from "./AuthContextBase";
 
-const AuthContext = createContext(null);
+//export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const { token, setToken, removeToken, checkToken } = useToken();
@@ -43,17 +44,24 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-const chkToken = () => {
-    checkToken(token);
-    return token;
-  };
+// const chkToken = () => {
+//     checkToken(token);
+//     return token;
+//   };
+
+useEffect(() => {
+  const valid = checkToken(token);
+  if (!valid) {
+    removeToken();
+  }
+}, [token, checkToken, removeToken]);
 
   const value = {
     token,
     user,
     login,
     logout,
-    chkToken,
+   // chkToken,
     isAuthenticated: !!token
   };
 
@@ -64,10 +72,11 @@ const chkToken = () => {
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
+// export function useAuth() {
+//   const context = useContext(AuthContext);
+//   if (!context) {
+//     throw new Error('useAuth must be used within an AuthProvider');
+//   }
+//   return context;
+// }
+//export const AuthContext = createContext(null);

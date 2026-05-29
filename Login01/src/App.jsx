@@ -1,7 +1,7 @@
-import React from "react";
+//import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useAuth } from './contexts/AuthContext';
+import { useAuth } from './contexts/useAuth';
 import Dashboard from "./components/Dashboard/Dashboard";
 import Preferences from "./components/Preferences/Preferences";
 import Login from "./components/Login/Login";
